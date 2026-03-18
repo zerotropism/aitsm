@@ -16,6 +16,7 @@ class TicketUpdate(BaseModel):
     priority: str | None = None
     category: str | None = None
     assignee_id: str | None = None
+    resolution: str | None = None
 
 
 class TicketOut(BaseModel):
@@ -31,6 +32,7 @@ class TicketOut(BaseModel):
     ai_triage_done: bool
     created_at: datetime
     updated_at: datetime
+    resolution: str | None
 
     model_config = {"from_attributes": True}
 

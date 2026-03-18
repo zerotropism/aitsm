@@ -5,8 +5,13 @@ build/
 dist/
 wheels/
 *.egg-info
-.env
-*.db
 
 # Virtual environments
 .venv
+
+# Environment variables (secrets)
+.env
+
+# Data (local, non-versionnable)
+*.db
+chroma_data/

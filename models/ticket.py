@@ -31,6 +31,7 @@ class Ticket(Base):
         ForeignKey("users.id"), nullable=True
     )
     ai_triage_done: Mapped[bool] = mapped_column(Boolean, default=False)
+    resolution: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )
