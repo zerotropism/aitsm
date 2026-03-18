@@ -20,12 +20,14 @@ Minimal GenAI-native ITSM built with FastAPI.
 
 ## Project structure
 
-├── core/ # Config, DB engine, JWT, LLM client
-├── models/ # SQLAlchemy ORM models
-├── schemas/ # Pydantic schemas (API in/out)
-├── routers/ # FastAPI routers (one per domain)
-├── services/ # Business logic
-└── vector/ # ChromaDB client
+```
+├── core/       # Config, DB engine, JWT, LLM client
+├── models/     # SQLAlchemy ORM models
+├── schemas/    # Pydantic schemas (API in/out)
+├── routers/    # FastAPI routers (one per domain)
+├── services/   # Business logic
+└── vector/     # ChromaDB client
+```
 
 ## Getting started
 
@@ -43,8 +45,8 @@ cp .env.example .env
 uv run uvicorn main:app --reload
 ```
 
-API available at [localhost:8000](http://localhost:8000)
-Interactive docs at [/docs](http://localhost:8000/docs)
+API available at [localhost:8000](http://localhost:8000)  
+Interactive docs at [localhost:8000/docs](http://localhost:8000/docs)
 
 ## Environment variables
 
@@ -60,6 +62,7 @@ See `.env.example` for the full list. Required:
 
 ## AI workflow
 
+```
 New ticket
   → POST /ai/tickets/{id}/triage        # auto category + priority
   → GET  /ai/tickets/{id}/suggest-kb    # top-3 KB articles
@@ -67,9 +70,10 @@ New ticket
 Resolved ticket
   → PATCH /tickets/{id}                 # set resolution field
   → POST /ai/tickets/{id}/draft-article # generate KB draft (agent reviews before publish)
+```
 
 ## Notes
 
-* KB articles are indexed in ChromaDB only when `status` is set to published
-* The AI always produces suggestions — the agent validates before any action (human-in-the-loop)
-* `chroma_data` and `*.db` are local only, not versioned
+- KB articles are indexed in ChromaDB only when `status` is set to `published`
+- The AI always produces suggestions — the agent validates before any action (human-in-the-loop)
+- `chroma_data/` and `*.db` are local only, not versioned
