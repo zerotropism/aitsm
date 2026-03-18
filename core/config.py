@@ -6,8 +6,11 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = "sqlite:///./aitsm.db"
     SECRET_KEY: str = "change-me-in-production"
-    LLM_API_URL: str = "http://localhost"
+    LLM_API_URL: str = "http://localhost/v2/llm/invoke"
     LLM_API_KEY: str = ""
+    LLM_MODEL_NAME: str = "mistral.mistral-7b-instruct-v0:2"
+    LLM_PROVIDER: str = "bedrock"
+    LLM_WORKSPACE_ID: str = ""
     CHROMA_PATH: str = "./chroma_data"
 
 
