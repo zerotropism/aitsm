@@ -4,11 +4,14 @@ from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
 from schemas.ticket import TicketCreate, TicketList, TicketOut, TicketUpdate
+from schemas.ticket_comment import CommentCreate, CommentOut
 from services.ticket_service import (
     create_ticket,
     get_ticket,
     list_tickets,
     update_ticket,
+    add_comment,
+    list_comments,
 )
 
 router = APIRouter()
@@ -76,3 +79,32 @@ def delete(
         raise HTTPException(status_code=404, detail="Ticket not found")
     db.delete(ticket)
     db.commit()
+
+
+@router.post(
+    "/{ticket_id}/comments",
+    response_model=CommentOut,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_comment(
+    ticket_id: str,
+    payload: CommentCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    ticket = get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return add_comment(db, ticket_id, payload, author_id=current_user.id)
+
+
+@router.get("/{ticket_id}/comments", response_model=list[CommentOut])
+def get_comments(
+    ticket_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    ticket = get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return list_comments(db, ticket_id)

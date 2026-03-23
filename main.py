@@ -1,7 +1,14 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from core.database import Base, engine
-from models import kb_article, ticket, user  # noqa: F401
+from models import (
+    change,
+    kb_article,
+    service_catalog,
+    ticket,
+    ticket_comment,
+    user,
+)  # noqa: F401
 from routers import ai, auth, catalog, changes, kb, tickets
 
 
