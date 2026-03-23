@@ -79,3 +79,37 @@ def draft_kb_article(db: Session, ticket_id: str, author_id: str) -> KBArticle:
     db.commit()
     db.refresh(article)
     return article
+
+
+def deflect(db: Session, query: str) -> list[KBSearchResult]:
+    return search_kb(db, query, n_results=5)
+
+
+def suggest_reply(db: Session, ticket_id: str) -> str:
+    ticket = db.get(Ticket, ticket_id)
+    if not ticket:
+        raise ValueError(f"Ticket {ticket_id} not found")
+
+    # Contexte KB : articles les plus proches du ticket
+    kb_results = search_kb(db, f"{ticket.title} {ticket.description}", n_results=3)
+    kb_context = (
+        "\n\n".join(
+            f"Article : {r.article.title}\n{r.article.content[:500]}"
+            for r in kb_results
+        )
+        if kb_results
+        else "Aucun article KB pertinent trouvé."
+    )
+
+    system = (
+        "Tu es un agent support ITSM. Rédige une réponse professionnelle, concise et bienveillante "
+        "à envoyer au demandeur du ticket. Utilise les articles KB fournis si pertinents. "
+        "Rédige en français. Retourne uniquement le texte de la réponse, sans introduction."
+    )
+    text = (
+        f"Ticket : {ticket.title}\n"
+        f"Description : {ticket.description}\n\n"
+        f"Articles KB disponibles :\n{kb_context}"
+    )
+
+    return invoke(text, system_prompt=system)

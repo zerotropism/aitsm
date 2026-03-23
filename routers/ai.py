@@ -1,13 +1,28 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
 from schemas.kb_article import KBArticleOut, KBSearchResult
 from schemas.ticket import TicketOut
-from services.ai_service import draft_kb_article, suggest_kb_articles, triage_ticket
+from services.ai_service import (
+    deflect,
+    draft_kb_article,
+    suggest_kb_articles,
+    suggest_reply,
+    triage_ticket,
+)
 
 router = APIRouter()
+
+
+@router.get("/deflect", response_model=list[KBSearchResult])
+def deflect_ticket(
+    q: str = Query(..., min_length=3),
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return deflect(db, query=q)
 
 
 @router.post("/tickets/{ticket_id}/triage", response_model=TicketOut)
@@ -44,6 +59,21 @@ def draft_article(
 ):
     try:
         return draft_kb_article(db, ticket_id, author_id=current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+    except RuntimeError as e:
+        raise HTTPException(status_code=503, detail=str(e))
+
+
+@router.post("/tickets/{ticket_id}/suggest-reply", response_model=dict)
+def suggest_reply_endpoint(
+    ticket_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        reply = suggest_reply(db, ticket_id)
+        return {"reply": reply}
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
     except RuntimeError as e:
