@@ -4,6 +4,7 @@ from core.database import Base, engine
 from models import (
     change,
     kb_article,
+    kb_feedback,
     service_catalog,
     ticket,
     ticket_comment,

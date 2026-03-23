@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
-
 from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
@@ -9,6 +8,7 @@ from schemas.kb_article import (
     KBArticleOut,
     KBArticleUpdate,
     KBSearchResult,
+    FeedbackCreate,
 )
 from services.kb_service import (
     create_article,
@@ -16,6 +16,7 @@ from services.kb_service import (
     list_articles,
     search_kb,
     update_article,
+    add_feedback,
 )
 from vector.chroma_client import delete_article
 
@@ -76,6 +77,19 @@ def update(
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
     return article
+
+
+@router.post("/{article_id}/feedback", response_model=KBArticleOut)
+def feedback(
+    article_id: str,
+    payload: FeedbackCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        return add_feedback(db, article_id, payload, user_id=current_user.id)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.delete("/{article_id}", status_code=status.HTTP_204_NO_CONTENT)

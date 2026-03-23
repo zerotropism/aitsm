@@ -1,11 +1,13 @@
 import json
 from sqlalchemy.orm import Session
+from models.kb_feedback import KBFeedback
 from models.kb_article import KBArticle
 from schemas.kb_article import (
     KBArticleCreate,
     KBArticleUpdate,
     KBSearchResult,
     KBArticleOut,
+    FeedbackCreate,
 )
 from vector.chroma_client import delete_article, index_article, search_articles
 
@@ -82,3 +84,43 @@ def search_kb(db: Session, query: str, n_results: int = 3) -> list[KBSearchResul
                 )
             )
     return results
+
+
+def add_feedback(
+    db: Session, article_id: str, payload: FeedbackCreate, user_id: str
+) -> KBArticle:
+    article = db.get(KBArticle, article_id)
+    if not article:
+        raise ValueError(f"Article {article_id} not found")
+    if payload.vote not in ("useful", "not_relevant"):
+        raise ValueError("vote must be 'useful' or 'not_relevant'")
+
+    # To prevent multiple votes from same user on same article & ticket
+    existing = (
+        db.query(KBFeedback)
+        .filter(
+            KBFeedback.article_id == article_id,
+            KBFeedback.user_id == user_id,
+            KBFeedback.ticket_id == payload.ticket_id,
+        )
+        .first()
+    )
+    if existing:
+        raise ValueError("Already voted for this article in this context")
+
+    feedback = KBFeedback(
+        article_id=article_id,
+        ticket_id=payload.ticket_id,
+        user_id=user_id,
+        vote=payload.vote,
+    )
+    db.add(feedback)
+
+    if payload.vote == "useful":
+        article.useful_count += 1
+    else:
+        article.not_relevant_count += 1
+
+    db.commit()
+    db.refresh(article)
+    return article

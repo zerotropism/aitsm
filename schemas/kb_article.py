@@ -28,6 +28,8 @@ class KBArticleOut(BaseModel):
     chroma_id: str | None
     created_at: datetime
     updated_at: datetime
+    useful_count: int
+    not_relevant_count: int
 
     model_config = {"from_attributes": True}
 
@@ -44,3 +46,8 @@ class KBArticleOut(BaseModel):
 class KBSearchResult(BaseModel):
     article: KBArticleOut
     score: float
+
+
+class FeedbackCreate(BaseModel):
+    vote: str  # "useful" | "not_relevant"
+    ticket_id: str | None = None
