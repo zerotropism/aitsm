@@ -33,6 +33,7 @@ class TicketOut(BaseModel):
     created_at: datetime
     updated_at: datetime
     resolution: str | None
+    service_id: str | None
 
     model_config = {"from_attributes": True}
 
