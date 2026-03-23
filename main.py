@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from core.database import Base, engine
 from models import kb_article, ticket, user  # noqa: F401
-from routers import ai, auth, kb, tickets, catalog
+from routers import ai, auth, catalog, changes, kb, tickets
 
 
 @asynccontextmanager
@@ -18,6 +18,7 @@ app.include_router(tickets.router, prefix="/tickets", tags=["tickets"])
 app.include_router(kb.router, prefix="/kb", tags=["kb"])
 app.include_router(ai.router, prefix="/ai", tags=["ai"])
 app.include_router(catalog.router, prefix="/catalog", tags=["catalog"])
+app.include_router(changes.router, prefix="/changes", tags=["changes"])
 
 
 @app.get("/health")
