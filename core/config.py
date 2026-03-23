@@ -12,6 +12,12 @@ class Settings(BaseSettings):
     LLM_PROVIDER: str = "bedrock"
     LLM_WORKSPACE_ID: str = ""
     CHROMA_PATH: str = "./chroma_data"
+    SLA_HOURS: dict = {
+        "critical": 1 / 60,  # 1min for testing, change to proper value for production
+        "high": 8,
+        "medium": 24,
+        "low": 72,
+    }
 
 
 settings = Settings()

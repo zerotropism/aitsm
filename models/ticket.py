@@ -35,6 +35,8 @@ class Ticket(Base):
     )
     ai_triage_done: Mapped[bool] = mapped_column(Boolean, default=False)
     resolution: Mapped[str | None] = mapped_column(Text, nullable=True)
+    sla_due_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    sla_breached: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime, default=lambda: datetime.now(timezone.utc)
     )

@@ -34,6 +34,8 @@ class TicketOut(BaseModel):
     updated_at: datetime
     resolution: str | None
     service_id: str | None
+    sla_due_at: datetime | None
+    sla_breached: bool
 
     model_config = {"from_attributes": True}
 

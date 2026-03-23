@@ -32,11 +32,17 @@ def list_all(
     limit: int = Query(20, ge=1, le=100),
     status: str | None = Query(None),
     priority: str | None = Query(None),
+    sla_breached: bool | None = Query(None),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     items, total = list_tickets(
-        db, skip=skip, limit=limit, status=status, priority=priority
+        db,
+        skip=skip,
+        limit=limit,
+        status=status,
+        priority=priority,
+        sla_breached=sla_breached,
     )
     return TicketList(items=items, total=total)
 
