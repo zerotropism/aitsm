@@ -98,11 +98,13 @@ Ticket resolved
 
 ## Change worklow
 
+```
 POST /changes                    # create (draft)
 POST /changes/{id}/submit        # draft → review
 POST /changes/{id}/approve       # review → approved  (admin only)
 POST /changes/{id}/reject        # review → rejected  (admin only)
 POST /changes/{id}/done          # approved → done    (admin only)
+```
 
 ## Notes
 
