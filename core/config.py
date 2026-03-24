@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     LLM_WORKSPACE_ID: str = ""
     CHROMA_PATH: str = "./chroma_data"
     SLA_HOURS: dict = {
-        "critical": 1 / 60,  # 1min for testing, change to proper value for production
+        "critical": 4,
         "high": 8,
         "medium": 24,
         "low": 72,
