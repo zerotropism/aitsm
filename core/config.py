@@ -18,6 +18,7 @@ class Settings(BaseSettings):
         "medium": 24,
         "low": 72,
     }
+    MCP_SYSTEM_USER_ID: str = ""
 
 
 settings = Settings()
