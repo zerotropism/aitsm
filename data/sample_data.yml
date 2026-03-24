@@ -1,0 +1,117 @@
+kb_articles:
+  - title: "Résoudre les problèmes de connexion VPN"
+    tags: ["vpn", "réseau", "connexion", "certificat"]
+    content: |
+      # Résoudre les problèmes de connexion VPN
+
+      ## Symptômes courants
+      - Erreur d'authentification au démarrage
+      - Connexion qui se coupe après quelques minutes
+      - Impossible de joindre les ressources internes
+
+      ## Solutions
+
+      ### 1. Vérifier le certificat
+      Ouvrez les Préférences Système > Réseau > VPN > Avancé > Certificats. Si le certificat est expiré, contactez le support pour en obtenir un nouveau.
+
+      ### 2. Réinitialiser le mot de passe VPN
+      Rendez-vous sur le portail RH > Mon compte > Réinitialiser mot de passe VPN.
+
+      ### 3. Réinstaller le client VPN
+      Désinstallez GlobalProtect, redémarrez, puis réinstallez depuis le portail IT.
+
+  - title: "Réinitialiser son mot de passe Active Directory"
+    tags: ["mot de passe", "active directory", "authentification", "accès"]
+    content: |
+      # Réinitialiser son mot de passe Active Directory
+
+      ## Depuis Windows
+      1. Sur l'écran de connexion, cliquez sur **Je n'arrive pas à me connecter**
+      2. Sélectionnez **Réinitialiser mon mot de passe**
+      3. Vérifiez votre identité via votre email de récupération
+
+      ## Depuis le portail web
+      1. Rendez-vous sur https://password.entreprise.com
+      2. Entrez votre identifiant réseau
+      3. Suivez les étapes de vérification
+
+      ## Règles du mot de passe
+      - Minimum 12 caractères
+      - Au moins 1 majuscule, 1 chiffre, 1 caractère spécial
+      - Ne peut pas reprendre les 5 derniers mots de passe
+
+  - title: "Procédure de démarrage d'un nouveau poste de travail"
+    tags: ["onboarding", "poste de travail", "configuration", "nouveau arrivant"]
+    content: |
+      # Procédure de démarrage d'un nouveau poste de travail
+
+      ## Étapes initiales
+      1. Connectez le poste au réseau filaire (le Wi-Fi sera configuré après)
+      2. Allumez et attendez l'écran de configuration Windows
+      3. Entrez vos identifiants réseau (format : prenom.nom)
+
+      ## Logiciels à installer en priorité
+      - **VPN** : téléchargez GlobalProtect depuis https://vpn.entreprise.com
+      - **Antivirus** : s'installe automatiquement après connexion au réseau
+      - **Office 365** : portail https://office.entreprise.com
+
+      ## En cas de problème
+      Contactez le support IT via le portail ou appelez le 1234.
+
+service_catalog:
+  - name: "Demande d'accès VPN"
+    description: "Formulaire de demande d'accès au VPN entreprise."
+    category: "Réseau"
+    default_priority: "medium"
+    form_schema:
+      - name: justification
+        type: text
+        required: true
+      - name: date_souhaitee
+        type: date
+        required: false
+
+  - name: "Nouveau poste de travail"
+    description: "Demande de matériel pour un nouvel arrivant ou remplacement."
+    category: "Matériel"
+    default_priority: "low"
+    form_schema:
+      - name: type_poste
+        type: text
+        required: true
+      - name: date_arrivee
+        type: date
+        required: true
+
+tickets:
+  - title: "Impossible de se connecter au VPN"
+    description: "Depuis ce matin je n'arrive plus à me connecter au VPN depuis mon Mac. J'obtiens une erreur d'authentification."
+    priority: high
+    status: open
+
+  - title: "Mot de passe expiré, compte bloqué"
+    description: "Mon mot de passe Active Directory a expiré et mon compte est maintenant bloqué. Je ne peux plus accéder à aucune ressource."
+    priority: critical
+    status: in_progress
+
+  - title: "Écran noir au démarrage du poste"
+    description: "Après la mise à jour Windows d'hier soir, mon PC affiche un écran noir au démarrage. Je suis bloqué."
+    priority: high
+    status: open
+
+  - title: "Demande d'installation de VS Code"
+    description: "J'aurais besoin que VS Code soit installé sur mon poste pour mon nouveau projet de développement."
+    priority: low
+    status: open
+
+  - title: "Imprimante réseau introuvable"
+    description: "Depuis ce matin je ne trouve plus l'imprimante réseau du 3e étage dans la liste des imprimantes disponibles."
+    priority: medium
+    status: resolved
+    resolution: "L'imprimante avait été renommée suite à une migration réseau. Mise à jour du nom dans les paramètres d'impression."
+
+changes:
+  - title: "Migration serveur de fichiers v2"
+    description: "Migration du serveur de fichiers partagés vers la nouvelle infrastructure. Fenêtre de maintenance prévue le weekend."
+    risk: high
+    status: review

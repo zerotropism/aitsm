@@ -19,4 +19,5 @@ dependencies = [
     "sqlalchemy>=2.0.48",
     "uvicorn[standard]>=0.41.0",
     "fastmcp>=3.1.1",
+    "pyyaml>=6.0.3",
 ]

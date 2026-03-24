@@ -15,4 +15,3 @@ wheels/
 # Data (local, non-versionnable)
 *.db
 chroma_data/
-data/
