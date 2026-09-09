@@ -1,0 +1,28 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv python install 3.12
+      - run: uv sync --all-groups
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest
+      # chromadb advisories below target the ChromaDB HTTP server (/api/v2 tenants, RBAC).
+      # aitsm uses chromadb.PersistentClient (embedded, in-process): no server is exposed.
+      # Re-evaluate on each chromadb upgrade; drop the ignores once fixed versions ship.
+      - run: |
+          uv export --format requirements-txt --no-hashes -o /tmp/req.txt
+          uv run pip-audit -r /tmp/req.txt --no-deps \
+            --ignore-vuln PYSEC-2026-311 \
+            --ignore-vuln CVE-2026-45830 \
+            --ignore-vuln CVE-2026-45831 \
+            --ignore-vuln CVE-2026-45833
