@@ -1,9 +1,12 @@
+from datetime import UTC, datetime, timedelta
+
 import bcrypt
-from datetime import datetime, timedelta, timezone
-from jose import JWTError, jwt
+import jwt
+
 from core.config import settings
 
 ACCESS_TOKEN_EXPIRE_HOURS = 24
+ALGORITHM = "HS256"
 
 
 def hash_password(plain: str) -> str:
@@ -16,14 +19,12 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 def create_access_token(data: dict) -> str:
     payload = data.copy()
-    payload["exp"] = datetime.now(timezone.utc) + timedelta(
-        hours=ACCESS_TOKEN_EXPIRE_HOURS
-    )
-    return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+    payload["exp"] = datetime.now(UTC) + timedelta(hours=ACCESS_TOKEN_EXPIRE_HOURS)
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=ALGORITHM)
 
 
 def decode_access_token(token: str) -> dict | None:
     try:
-        return jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-    except JWTError:
+        return jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
+    except jwt.InvalidTokenError:
         return None

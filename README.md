@@ -44,16 +44,18 @@ uv sync
 
 # Configure environment
 cp .env.example .env
-# Edit .env with your values (LLM API key, secret key…)
+
+# Generate the JWT signing key, then paste it into .env as SECRET_KEY
+uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
+
+# Edit .env with the remaining values (LLM_API_URL, LLM_API_KEY…)
 
 # Bootstrap DB + users + sample data (first time only)
 PYTHONPATH=. uv run python scripts/bootstrap.py
 
-# Start the server
-uv run uvicorn main:app --reload
-
-# Start the MCP server (separate terminal)
-PYTHONPATH=. uv run fastmcp dev mcp/server.py
+# The bootstrap creates an admin account (`admin@aitsm.local`) and prints a generated 
+# password once — copy it. To set your own: 
+`PYTHONPATH=. uv run python scripts/seed_admin.py <email> <password>`.
 ```
 
 API available at [localhost:8000](http://localhost:8000)  
@@ -65,7 +67,7 @@ See `.env.example` for the full list. Required:
 
 | Variable | Description |
 |---|---|
-| `SECRET_KEY` | JWT signing key |
+| `SECRET_KEY` | JWT signing key — **required**, 32 characters minimum. |
 | `LLM_API_URL` | LLM endpoint URL |
 | `LLM_API_KEY` | LLM API key |
 | `LLM_MODEL_NAME` | Model identifier |
