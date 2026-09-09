@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
+
 from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
@@ -34,9 +35,9 @@ def triage(
     try:
         return triage_ticket(db, ticket_id)
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
     except RuntimeError as e:
-        raise HTTPException(status_code=503, detail=str(e))
+        raise HTTPException(status_code=503, detail=str(e)) from e
 
 
 @router.get("/tickets/{ticket_id}/suggest-kb", response_model=list[KBSearchResult])
@@ -48,7 +49,7 @@ def suggest_kb(
     try:
         return suggest_kb_articles(db, ticket_id)
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
 
 
 @router.post("/tickets/{ticket_id}/draft-article", response_model=KBArticleOut)
@@ -60,9 +61,9 @@ def draft_article(
     try:
         return draft_kb_article(db, ticket_id, author_id=current_user.id)
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
     except RuntimeError as e:
-        raise HTTPException(status_code=503, detail=str(e))
+        raise HTTPException(status_code=503, detail=str(e)) from e
 
 
 @router.post("/tickets/{ticket_id}/suggest-reply", response_model=dict)
@@ -75,6 +76,6 @@ def suggest_reply_endpoint(
         reply = suggest_reply(db, ticket_id)
         return {"reply": reply}
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e
     except RuntimeError as e:
-        raise HTTPException(status_code=503, detail=str(e))
+        raise HTTPException(status_code=503, detail=str(e)) from e

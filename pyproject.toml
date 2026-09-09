@@ -5,8 +5,6 @@ description = "AI-based simple ITSM"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "aiosqlite>=0.22.1",
-    "alembic>=1.18.4",
     "chromadb>=1.5.5",
     "email-validator>=2.3.0",
     "fastapi>=0.135.1",
@@ -14,10 +12,18 @@ dependencies = [
     "bcrypt>=4.0",
     "pydantic>=2.12.5",
     "pydantic-settings>=2.13.1",
-    "python-jose[cryptography]>=3.5.0",
     "python-multipart>=0.0.22",
     "sqlalchemy>=2.0.48",
     "uvicorn[standard]>=0.41.0",
     "fastmcp>=3.1.1",
     "pyyaml>=6.0.3",
+    "pyjwt>=2.13",
+]
+
+[dependency-groups]
+dev = [
+    "anyio>=4.12.1",
+    "pip-audit>=2.10.1",
+    "pytest>=9.1.1",
+    "ruff>=0.16.6",
 ]

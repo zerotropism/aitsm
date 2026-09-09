@@ -1,5 +1,7 @@
 import json
+
 from sqlalchemy.orm import Session
+
 from models.service_catalog import ServiceCatalogItem
 from models.ticket import Ticket
 from schemas.service_catalog import ServiceCatalogCreate, ServiceRequestCreate
@@ -22,7 +24,7 @@ def create_service(db: Session, payload: ServiceCatalogCreate) -> ServiceCatalog
 def list_services(db: Session, active_only: bool = True) -> list[ServiceCatalogItem]:
     query = db.query(ServiceCatalogItem)
     if active_only:
-        query = query.filter(ServiceCatalogItem.is_active == True)
+        query = query.filter(ServiceCatalogItem.is_active)
     return query.order_by(ServiceCatalogItem.name).all()
 
 

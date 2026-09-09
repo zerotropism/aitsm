@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
+
 from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
@@ -70,9 +71,9 @@ def _transition_endpoint(new_status: str):
         try:
             return transition(db, change_id, new_status, current_user)
         except ValueError as e:
-            raise HTTPException(status_code=404, detail=str(e))
+            raise HTTPException(status_code=404, detail=str(e)) from e
         except PermissionError as e:
-            raise HTTPException(status_code=403, detail=str(e))
+            raise HTTPException(status_code=403, detail=str(e)) from e
 
     endpoint.__name__ = f"transition_{new_status}"
     return endpoint

@@ -2,6 +2,7 @@ import json
 import re
 
 from sqlalchemy.orm import Session
+
 from core.llm import invoke
 from models.kb_article import KBArticle
 from models.ticket import Ticket
@@ -93,10 +94,7 @@ def suggest_reply(db: Session, ticket_id: str) -> str:
     # Contexte KB : articles les plus proches du ticket
     kb_results = search_kb(db, f"{ticket.title} {ticket.description}", n_results=3)
     kb_context = (
-        "\n\n".join(
-            f"Article : {r.article.title}\n{r.article.content[:500]}"
-            for r in kb_results
-        )
+        "\n\n".join(f"Article : {r.article.title}\n{r.article.content[:500]}" for r in kb_results)
         if kb_results
         else "Aucun article KB pertinent trouvé."
     )

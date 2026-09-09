@@ -4,22 +4,14 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fastmcp import FastMCP
+
+import services.ai_service as ai_svc
+import services.kb_service as kb_svc
+import services.ticket_service as ticket_svc
 from core.config import settings
 from core.database import SessionLocal
-from models import (
-    user,
-    ticket,
-    kb_article,
-    service_catalog,
-    change,
-    ticket_comment,
-    kb_feedback,
-)  # noqa
 from schemas.ticket import TicketCreate, TicketUpdate
 from schemas.ticket_comment import CommentCreate
-import services.ticket_service as ticket_svc
-import services.kb_service as kb_svc
-import services.ai_service as ai_svc
 
 mcp = FastMCP("aitsm")
 
@@ -194,10 +186,7 @@ def suggest_kb_for_ticket(ticket_id: str) -> list[dict]:
     db = get_db()
     try:
         results = ai_svc.suggest_kb_articles(db, ticket_id)
-        return [
-            {"id": r.article.id, "title": r.article.title, "score": r.score}
-            for r in results
-        ]
+        return [{"id": r.article.id, "title": r.article.title, "score": r.score} for r in results]
     except ValueError as e:
         return [{"error": str(e)}]
     finally:

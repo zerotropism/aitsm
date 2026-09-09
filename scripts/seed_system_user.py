@@ -6,15 +6,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.database import SessionLocal
 from core.security import hash_password
-from models import (
-    user,
-    ticket,
-    kb_article,
-    service_catalog,
-    change,
-    ticket_comment,
-    kb_feedback,
-)  # noqa
 from models.user import User
 
 db = SessionLocal()
@@ -38,11 +29,9 @@ else:
     print(f"Created system user: {user_id}")
 
 # Auto-update .env with system user ID for use in MCP actions
-env_path = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"
-)
+env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
 if os.path.exists(env_path):
-    with open(env_path, "r") as f:
+    with open(env_path) as f:
         content = f.read()
     if re.search(r"^MCP_SYSTEM_USER_ID=", content, re.MULTILINE):
         content = re.sub(

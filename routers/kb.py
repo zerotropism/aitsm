@@ -1,22 +1,23 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
+
 from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
 from schemas.kb_article import (
+    FeedbackCreate,
     KBArticleCreate,
     KBArticleOut,
     KBArticleUpdate,
     KBSearchResult,
-    FeedbackCreate,
 )
 from services.kb_service import (
+    add_feedback,
     create_article,
     get_article,
     list_articles,
     search_kb,
     update_article,
-    add_feedback,
 )
 from vector.chroma_client import delete_article
 
@@ -89,7 +90,7 @@ def feedback(
     try:
         return add_feedback(db, article_id, payload, user_id=current_user.id)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 @router.delete("/{article_id}", status_code=status.HTTP_204_NO_CONTENT)

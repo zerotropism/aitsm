@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+
 from core.database import get_db
 from models.user import User
 from routers.auth import get_current_user
@@ -64,4 +65,4 @@ def request_service(
     try:
         return submit_request(db, service_id, payload, requester_id=current_user.id)
     except ValueError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=str(e)) from e

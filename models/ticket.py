@@ -1,16 +1,16 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+
 from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
+
 from core.database import Base
 
 
 class Ticket(Base):
     __tablename__ = "tickets"
 
-    id: Mapped[str] = mapped_column(
-        String, primary_key=True, default=lambda: str(uuid.uuid4())
-    )
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     title: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     status: Mapped[str] = mapped_column(
@@ -27,21 +27,15 @@ class Ticket(Base):
         default="portal",
     )
     requester_id: Mapped[str] = mapped_column(ForeignKey("users.id"), nullable=False)
-    assignee_id: Mapped[str | None] = mapped_column(
-        ForeignKey("users.id"), nullable=True
-    )
-    service_id: Mapped[str | None] = mapped_column(
-        ForeignKey("service_catalog.id"), nullable=True
-    )
+    assignee_id: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    service_id: Mapped[str | None] = mapped_column(ForeignKey("service_catalog.id"), nullable=True)
     ai_triage_done: Mapped[bool] = mapped_column(Boolean, default=False)
     resolution: Mapped[str | None] = mapped_column(Text, nullable=True)
     sla_due_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     sla_breached: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, default=lambda: datetime.now(timezone.utc)
-    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=lambda: datetime.now(UTC))
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
+        default=lambda: datetime.now(UTC),
+        onupdate=lambda: datetime.now(UTC),
     )

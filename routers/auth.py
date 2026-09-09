@@ -1,12 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
 from core.database import get_db
 from core.security import (
     create_access_token,
+    decode_access_token,
     hash_password,
     verify_password,
-    decode_access_token,
 )
 from models.user import User
 from schemas.user import Token, UserCreate, UserOut
@@ -40,9 +41,7 @@ def login(form: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     return Token(access_token=token)
 
 
-def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> User:
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
     payload = decode_access_token(token)
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid or expired token")

@@ -3,27 +3,19 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.database import SessionLocal
-from core.security import hash_password
-from models import (
-    user,
-    ticket,
-    kb_article,
-    service_catalog,
-    change,
-    ticket_comment,
-    kb_feedback,
-)  # noqa
-from models.user import User
-from models.ticket import Ticket
-from models.kb_article import KBArticle
-from models.service_catalog import ServiceCatalogItem
-from models.change import Change
-from models.ticket_comment import TicketComment
-from vector.chroma_client import index_article
 import json
+
 import yaml
 
+from core.database import SessionLocal
+from core.security import hash_password
+from models.change import Change
+from models.kb_article import KBArticle
+from models.service_catalog import ServiceCatalogItem
+from models.ticket import Ticket
+from models.ticket_comment import TicketComment
+from models.user import User
+from vector.chroma_client import index_article
 
 # Set users
 db = SessionLocal()
@@ -54,7 +46,7 @@ DATA_FILE = os.path.join(
     "sample_data.yml",
 )
 
-with open(DATA_FILE, "r", encoding="utf-8") as f:
+with open(DATA_FILE, encoding="utf-8") as f:
     data = yaml.safe_load(f)
 
 kb_items = data["kb_articles"]
@@ -89,11 +81,7 @@ for item in kb_items:
 
 
 for item in catalog_items:
-    existing = (
-        db.query(ServiceCatalogItem)
-        .filter(ServiceCatalogItem.name == item["name"])
-        .first()
-    )
+    existing = db.query(ServiceCatalogItem).filter(ServiceCatalogItem.name == item["name"]).first()
     if existing:
         print(f"Catalog already exists: {item['name']}")
         continue

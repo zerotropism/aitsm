@@ -7,3 +7,9 @@ select = ["E", "F", "I", "UP", "B", "SIM", "PTH"]
 [lint.flake8-bugbear]
 # FastAPI's dependency injection relies on calls in default arguments.
 extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Header", "fastapi.Body"]
+
+[lint.per-file-ignores]
+# These files bootstrap sys.path with os.path because the project has no src/ layout
+# and is not installed as a package. Revisit with the src/aitsm/ restructuring (phase 3).
+"scripts/*.py" = ["PTH"]
+"mcp/server.py" = ["PTH"]
