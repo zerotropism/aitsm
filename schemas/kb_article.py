@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
-from pydantic import BaseModel, field_validator, model_serializer
+
+from pydantic import BaseModel, field_validator
 
 
 class KBArticleCreate(BaseModel):

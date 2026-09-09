@@ -1,7 +1,8 @@
 from __future__ import annotations
-import chromadb
-from core.config import settings
 
+import chromadb
+
+from core.config import settings
 
 _client: chromadb.PersistentClient | None = None
 

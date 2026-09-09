@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+
 from models.change import Change
 from models.user import User
 from schemas.change import ChangeCreate, ChangeUpdate
@@ -58,9 +59,7 @@ def transition(db: Session, change_id: str, new_status: str, user: User) -> Chan
 
     allowed = TRANSITIONS.get(change.status, set())
     if new_status not in allowed:
-        raise PermissionError(
-            f"Cannot transition from '{change.status}' to '{new_status}'"
-        )
+        raise PermissionError(f"Cannot transition from '{change.status}' to '{new_status}'")
 
     if new_status in ADMIN_ONLY_TRANSITIONS and user.role != "admin":
         raise PermissionError("Admin only")

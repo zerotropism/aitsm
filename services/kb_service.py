@@ -1,13 +1,15 @@
 import json
+
 from sqlalchemy.orm import Session
-from models.kb_feedback import KBFeedback
+
 from models.kb_article import KBArticle
+from models.kb_feedback import KBFeedback
 from schemas.kb_article import (
+    FeedbackCreate,
     KBArticleCreate,
+    KBArticleOut,
     KBArticleUpdate,
     KBSearchResult,
-    KBArticleOut,
-    FeedbackCreate,
 )
 from vector.chroma_client import delete_article, index_article, search_articles
 
@@ -44,9 +46,7 @@ def list_articles(
     return items, total
 
 
-def update_article(
-    db: Session, article_id: str, payload: KBArticleUpdate
-) -> KBArticle | None:
+def update_article(db: Session, article_id: str, payload: KBArticleUpdate) -> KBArticle | None:
     article = db.get(KBArticle, article_id)
     if not article:
         return None
@@ -86,9 +86,7 @@ def search_kb(db: Session, query: str, n_results: int = 3) -> list[KBSearchResul
     return results
 
 
-def add_feedback(
-    db: Session, article_id: str, payload: FeedbackCreate, user_id: str
-) -> KBArticle:
+def add_feedback(db: Session, article_id: str, payload: FeedbackCreate, user_id: str) -> KBArticle:
     article = db.get(KBArticle, article_id)
     if not article:
         raise ValueError(f"Article {article_id} not found")

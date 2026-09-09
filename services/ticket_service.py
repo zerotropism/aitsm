@@ -1,5 +1,7 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
+
 from sqlalchemy.orm import Session
+
 from core.config import settings
 from models.ticket import Ticket
 from models.ticket_comment import TicketComment
@@ -13,7 +15,7 @@ def _compute_sla_due(priority: str, from_dt: datetime) -> datetime:
 
 
 def create_ticket(db: Session, payload: TicketCreate, requester_id: str) -> Ticket:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     ticket = Ticket(
         **payload.model_dump(),
         requester_id=requester_id,
@@ -31,11 +33,11 @@ def _check_sla(db: Session, ticket: Ticket) -> Ticket:
         and ticket.sla_due_at
         and ticket.status not in ("resolved", "closed")
     ):
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         due = ticket.sla_due_at
         # Normalize : if due is naive, interpret it as UTC
         if due.tzinfo is None:
-            due = due.replace(tzinfo=timezone.utc)
+            due = due.replace(tzinfo=UTC)
         if now > due:
             ticket.sla_breached = True
             db.commit()
@@ -79,9 +81,7 @@ def update_ticket(db: Session, ticket_id: str, payload: TicketUpdate) -> Ticket 
 
     # Si la priorité change, recalculer le SLA
     if "priority" in data and data["priority"] != ticket.priority:
-        ticket.sla_due_at = _compute_sla_due(
-            data["priority"], datetime.now(timezone.utc)
-        )
+        ticket.sla_due_at = _compute_sla_due(data["priority"], datetime.now(UTC))
         # Réinitialiser le breach si on remonte la priorité
         ticket.sla_breached = False
 

@@ -1,6 +1,6 @@
 import os
-import sys
 import subprocess
+import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 env = {**os.environ, "PYTHONPATH": ROOT}

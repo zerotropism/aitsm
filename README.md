@@ -53,12 +53,12 @@ uv run python -c "import secrets; print(secrets.token_urlsafe(32))"
 # Bootstrap DB + users + sample data (first time only)
 PYTHONPATH=. uv run python scripts/bootstrap.py
 
-# The bootstrap creates an admin account (`admin@aitsm.local`) and prints a generated 
-# password once — copy it. To set your own: 
+# The bootstrap creates an admin account (`admin@aitsm.local`) and prints a generated
+# password once — copy it. To set your own:
 `PYTHONPATH=. uv run python scripts/seed_admin.py <email> <password>`.
 ```
 
-API available at [localhost:8000](http://localhost:8000)  
+API available at [localhost:8000](http://localhost:8000)
 Interactive docs at [localhost:8000/docs](http://localhost:8000/docs)
 
 ## Environment variables
@@ -261,6 +261,10 @@ In `~/Library/Application Support/Claude/claude_desktop_config.json`:
 | `deflect` | Suggest KB articles from a free-text query (before ticket creation) |
 | `suggest_reply` | Draft a reply to send to the requester (agent validates before sending) |
 | `draft_kb_article` | Generate a Markdown KB draft from a resolved ticket |
+
+## Tests
+
+uv run pytest
 
 ## Notes
 
