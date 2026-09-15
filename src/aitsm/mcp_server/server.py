@@ -216,3 +216,12 @@ def draft_kb_article(ticket_id: str) -> dict:
             "status": article.status,
             "source_ticket_id": article.source_ticket_id,
         }
+
+
+def main() -> None:
+    """Console entry point: serve the MCP server over stdio."""
+    mcp.run()
+
+
+if __name__ == "__main__":
+    main()

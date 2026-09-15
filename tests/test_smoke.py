@@ -96,3 +96,15 @@ async def test_mcp_filters_are_optional():
 
         result = await client.call_tool("list_tickets", {})
         assert isinstance(result.data, list)
+
+
+def test_console_entry_points_resolve():
+    """Each [project.scripts] target must exist, or the command fails only at run time."""
+    from importlib import import_module
+
+    for module, attribute in (
+        ("aitsm.app", "main"),
+        ("aitsm.mcp_server.server", "main"),
+        ("aitsm.scripts.bootstrap", "main"),
+    ):
+        assert hasattr(import_module(module), attribute), f"{module}:{attribute}"
