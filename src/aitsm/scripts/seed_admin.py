@@ -6,7 +6,7 @@ from aitsm.core.security import hash_password
 from aitsm.models.user import User
 
 db = SessionLocal()
-email = sys.argv[1] if len(sys.argv) > 1 else "admin@aitsm.local"
+email = sys.argv[1] if len(sys.argv) > 1 else "admin@aitsm.example"
 password = sys.argv[2] if len(sys.argv) > 2 else secrets.token_urlsafe(16)
 
 existing = db.query(User).filter(User.email == email).first()

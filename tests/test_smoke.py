@@ -145,3 +145,19 @@ def test_search_score_increases_as_distance_decreases(tmp_path, monkeypatch):
     assert [h["id"] for h in hits] == ["a", "b"]
     assert hits[0]["score"] > hits[1]["score"]
     assert hits[0]["distance"] < hits[1]["distance"]
+
+
+def test_seeded_addresses_pass_the_registration_schema():
+    """Demo accounts must use addresses the API would accept, or the data contradicts the API."""
+    from aitsm.core.database import SessionLocal
+    from aitsm.models.user import User
+    from aitsm.schemas.user import UserCreate
+
+    db = SessionLocal()
+    try:
+        addresses = [user.email for user in db.query(User).all()]
+    finally:
+        db.close()
+
+    for address in addresses:
+        UserCreate(email=address, password="x" * 12)
