@@ -68,3 +68,31 @@ async def test_mcp_server_tools():
 @pytest.fixture
 def anyio_backend():
     return "asyncio"
+
+
+@pytest.mark.anyio
+async def test_mcp_business_error_fails_the_call():
+    """A missing ticket must fail the tool call, not return {"error": ...} as a success."""
+    from fastmcp import Client
+    from fastmcp.exceptions import ToolError
+
+    from aitsm.mcp_server.server import mcp
+
+    async with Client(mcp) as client:
+        with pytest.raises(ToolError, match="not found"):
+            await client.call_tool("get_ticket", {"ticket_id": "does-not-exist"})
+
+
+@pytest.mark.anyio
+async def test_mcp_filters_are_optional():
+    """Without defaults, a model has to pass three explicit nulls to list tickets."""
+    from fastmcp import Client
+
+    from aitsm.mcp_server.server import mcp
+
+    async with Client(mcp) as client:
+        tool = next(t for t in await client.list_tools() if t.name == "list_tickets")
+        assert "status" not in tool.input_schema.get("required", [])
+
+        result = await client.call_tool("list_tickets", {})
+        assert isinstance(result.data, list)
