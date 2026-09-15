@@ -10,6 +10,7 @@ import aitsm.services.kb_service as kb_svc
 import aitsm.services.ticket_service as ticket_svc
 from aitsm.core.config import settings
 from aitsm.core.database import SessionLocal
+from aitsm.core.llm import LLMError
 from aitsm.schemas.ticket import TicketCreate, TicketUpdate
 from aitsm.schemas.ticket_comment import CommentCreate
 
@@ -29,7 +30,7 @@ def session() -> Iterator[Session]:
     db = SessionLocal()
     try:
         yield db
-    except ValueError as exc:
+    except (ValueError, LLMError) as exc:
         raise ToolError(str(exc)) from exc
     finally:
         db.close()

@@ -108,3 +108,22 @@ def test_console_entry_points_resolve():
         ("aitsm.scripts.bootstrap", "main"),
     ):
         assert hasattr(import_module(module), attribute), f"{module}:{attribute}"
+
+
+def test_llm_backend_selection():
+    from aitsm.core.llm import GatewayLLM, OllamaLLM, get_llm
+
+    get_llm.cache_clear()
+    assert isinstance(get_llm(), OllamaLLM | GatewayLLM)
+    get_llm.cache_clear()
+
+
+def test_unreachable_backend_raises_a_domain_error():
+    """A model outage must be an LLMError, which the MCP layer turns into a ToolError."""
+    import pytest
+
+    from aitsm.core.llm import LLMError, OllamaLLM
+
+    llm = OllamaLLM("http://127.0.0.1:1", "nope", timeout=0.5)
+    with pytest.raises(LLMError, match="unavailable"):
+        llm.invoke("ping")

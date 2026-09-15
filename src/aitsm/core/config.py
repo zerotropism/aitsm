@@ -12,9 +12,13 @@ class Settings(BaseSettings):
     SECRET_KEY: str = Field(min_length=32)
     LLM_API_URL: str = "http://localhost/v2/llm/invoke"
     LLM_API_KEY: str = ""
-    LLM_MODEL_NAME: str = "mistral.mistral-7b-instruct-v0:2"
+    LLM_MODEL_NAME: str = "llama3.2:3b"
     LLM_PROVIDER: str = "bedrock"
     LLM_WORKSPACE_ID: str = ""
+    LLM_BACKEND: str = "ollama"
+    LLM_TIMEOUT: float = 60.0
+    OLLAMA_HOST: str = "http://localhost:11434"
+    OLLAMA_MODEL: str = "llama3.2:3b"
     CHROMA_PATH: str = "./chroma_data"
     SLA_HOURS: dict = {
         "critical": 4,
