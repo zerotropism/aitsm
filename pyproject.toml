@@ -15,7 +15,7 @@ dependencies = [
     "python-multipart>=0.0.22",
     "sqlalchemy>=2.0.48",
     "uvicorn[standard]>=0.41.0",
-    "fastmcp>=3.1.1",
+    "fastmcp>=4",
     "pyyaml>=6.0.3",
     "pyjwt>=2.13",
 ]
@@ -27,3 +27,12 @@ dev = [
     "pytest>=9.1.1",
     "ruff>=0.16.6",
 ]
+
+[project.scripts]
+aitsm-api = "aitsm.app:main"
+aitsm-mcp = "aitsm.mcp_server.server:main"
+aitsm-bootstrap = "aitsm.scripts.bootstrap:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

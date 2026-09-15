@@ -1,11 +1,9 @@
 """Smoke tests: JWT, API auth, MCP server. Nothing here needs Chroma or an LLM."""
 
-import importlib.util
-
 import pytest
 from fastapi.testclient import TestClient
 
-from core.security import create_access_token, decode_access_token
+from aitsm.core.security import create_access_token, decode_access_token
 
 
 def test_jwt_roundtrip():
@@ -17,7 +15,7 @@ def test_jwt_roundtrip():
 
 
 def test_api_register_login_and_auth_guard():
-    from main import app
+    from aitsm.app import app
 
     client = TestClient(app)
     assert client.get("/health").json() == {"status": "ok"}
@@ -35,7 +33,9 @@ def test_api_register_login_and_auth_guard():
     headers = {"Authorization": f"Bearer {r.json()['access_token']}"}
 
     r = client.post(
-        "/tickets", json={"title": "smoke", "description": "smoke test"}, headers=headers
+        "/tickets",
+        json={"title": "smoke", "description": "smoke test"},
+        headers=headers,
     )
     assert r.status_code == 201
     assert r.json()["status"] == "open"
@@ -45,15 +45,17 @@ def test_api_register_login_and_auth_guard():
 async def test_mcp_server_tools():
     from fastmcp import Client
 
-    # mcp/server.py cannot be imported as `mcp.server` (name clash with the mcp SDK);
-    # load it by path until the package is renamed.
-    spec = importlib.util.spec_from_file_location("aitsm_mcp", "mcp/server.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    from aitsm.mcp_server.server import mcp
 
-    async with Client(module.mcp) as client:
+    async with Client(mcp) as client:
         tools = {t.name for t in await client.list_tools()}
-        assert {"create_ticket", "get_ticket", "list_tickets", "search_kb", "deflect"} <= tools
+        assert {
+            "create_ticket",
+            "get_ticket",
+            "list_tickets",
+            "search_kb",
+            "deflect",
+        } <= tools
         assert len(tools) == 11
 
         created = await client.call_tool(
