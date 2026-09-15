@@ -1,7 +1,7 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from aitsm.paths import DATABASE_FILE
+from aitsm.paths import CHROMA_DIR, DATABASE_FILE
 
 
 class Settings(BaseSettings):
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     LLM_TIMEOUT: float = 60.0
     OLLAMA_HOST: str = "http://localhost:11434"
     OLLAMA_MODEL: str = "llama3.2:3b"
-    CHROMA_PATH: str = "./chroma_data"
+    CHROMA_PATH: str = str(CHROMA_DIR)
     SLA_HOURS: dict = {
         "critical": 4,
         "high": 8,

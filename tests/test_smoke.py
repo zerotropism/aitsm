@@ -127,3 +127,21 @@ def test_unreachable_backend_raises_a_domain_error():
     llm = OllamaLLM("http://127.0.0.1:1", "nope", timeout=0.5)
     with pytest.raises(LLMError, match="unavailable"):
         llm.invoke("ping")
+
+
+def test_search_score_increases_as_distance_decreases(tmp_path, monkeypatch):
+    """Chroma returns a distance; callers and models read `score` as "higher is better"."""
+    from aitsm.core.config import settings
+    from aitsm.vector import chroma_client
+
+    monkeypatch.setattr(settings, "CHROMA_PATH", str(tmp_path / "chroma"))
+    monkeypatch.setattr(chroma_client, "_client", None)
+
+    chroma_client.index_article("a", "Connexion VPN impossible", "Le tunnel VPN échoue", [])
+    chroma_client.index_article("b", "Imprimante réseau", "La file d'impression bloque", [])
+
+    hits = chroma_client.search_articles("problème de connexion VPN", n_results=2)
+
+    assert [h["id"] for h in hits] == ["a", "b"]
+    assert hits[0]["score"] > hits[1]["score"]
+    assert hits[0]["distance"] < hits[1]["distance"]

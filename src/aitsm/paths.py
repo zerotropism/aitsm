@@ -7,3 +7,4 @@ PROJECT_ROOT = PACKAGE_ROOT.parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 ENV_FILE = PROJECT_ROOT / ".env"
 DATABASE_FILE = PROJECT_ROOT / "aitsm.db"
+CHROMA_DIR = PROJECT_ROOT / "chroma_data"
