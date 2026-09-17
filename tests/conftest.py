@@ -1,11 +1,15 @@
-"""Test environment: isolated SQLite file, fixed secret, no network (no Chroma, no LLM)."""
+"""Test environment: throwaway data directory, fixed secret, no network, no LLM."""
 
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
-os.environ["DATABASE_URL"] = "sqlite:///./test_aitsm.db"
+_DATA_DIR = Path(tempfile.mkdtemp(prefix="aitsm-tests-"))
+
+os.environ["DATABASE_URL"] = f"sqlite:///{_DATA_DIR / 'aitsm.db'}"
 os.environ["SECRET_KEY"] = "test-secret-key-that-is-at-least-32-bytes-long"
-os.environ["CHROMA_PATH"] = "./test_chroma"
+os.environ["CHROMA_PATH"] = str(_DATA_DIR / "chroma")
 
 import pytest  # noqa: E402
 
@@ -18,4 +22,4 @@ def _database():
     Base.metadata.create_all(bind=engine)
     yield
     engine.dispose()
-    Path("test_aitsm.db").unlink(missing_ok=True)
+    shutil.rmtree(_DATA_DIR, ignore_errors=True)

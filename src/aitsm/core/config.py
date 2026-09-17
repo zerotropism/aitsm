@@ -1,11 +1,11 @@
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-from aitsm.paths import CHROMA_DIR, DATABASE_FILE
+from aitsm.paths import CHROMA_DIR, DATABASE_FILE, ENV_FILE
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+    model_config = SettingsConfigDict(env_file=ENV_FILE, env_file_encoding="utf-8")
 
     DATABASE_URL: str = f"sqlite:///{DATABASE_FILE}"
     # Required, no default: a missing key must fail at startup, not run with a known value.

@@ -14,4 +14,4 @@ wheels/
 
 # Data (local, non-versionnable)
 *.db
-chroma_data/test_chroma/
+chroma_data/
