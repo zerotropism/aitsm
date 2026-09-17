@@ -1,4 +1,4 @@
-"""Test environment: throwaway data directory, fixed secret, no network, no LLM."""
+"""Test environment: throwaway data directory, fixed secret, no LLM."""
 
 import os
 import shutil

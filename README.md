@@ -259,7 +259,8 @@ returns `{"error": ...}` as a successful result, which a model would have to not
 uv run pytest
 ```
 
-No network and no model: the tests exercise the JWT round trip, the API auth flow, the MCP
+No LLM needed. The search scoring test embeds text, so its first run downloads Chroma's
+embedding model (see Notes). The tests exercise the JWT round trip, the API auth flow, the MCP
 server through an in-memory client, the search scoring on a temporary index, and that every
 declared console entry point actually resolves.
 
@@ -267,8 +268,8 @@ declared console entry point actually resolves.
 
 - KB articles are indexed only when `status` is `published`; archiving removes them from the index
 - Semantic search returns a `score` where higher is better, alongside the raw Chroma `distance`
-- The embedding function is Chroma's default: a small ONNX model shipped with the package, so
-  indexing needs no network access and no `torch`
+- The embedding function is Chroma's default, all-MiniLM-L6-v2 in ONNX: no `torch`, but the model
+  is downloaded once into `~/.cache/chroma/onnx_models`, so the first indexing needs network access
 - Every AI endpoint returns a suggestion — the operator validates before anything is applied
 - `chroma_data/`, `*.db` and `.env` are local only, never versioned
 - Sample data lives in `data/sample_data.yml`
