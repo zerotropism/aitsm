@@ -1,4 +1,4 @@
-"""The KB vector index. Chroma runs embedded; the embedding model is downloaded on first use."""
+"""The KB vector index. Chroma runs embedded with the ONNX model shipped in the package."""
 
 from __future__ import annotations
 
