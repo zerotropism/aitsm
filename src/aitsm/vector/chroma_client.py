@@ -1,4 +1,4 @@
-"""The KB vector index. Chroma runs embedded with the ONNX model shipped in the package."""
+"""The KB vector index. Chroma runs embedded; the embedding model is downloaded on first use."""
 
 from __future__ import annotations
 
@@ -13,9 +13,9 @@ _client: chromadb.PersistentClient | None = None
 def get_collection() -> chromadb.Collection:
     """Open the collection, naming the embedding function rather than relying on the default.
 
-    Chroma's default is a small ONNX model shipped with the package: no download, no torch,
-    no network. Good enough for a KB of this size; swapping in a sentence-transformers model
-    would improve recall at the cost of a heavy dependency.
+    Chroma's default is all-MiniLM-L6-v2 in ONNX: no torch, but the model is downloaded on the
+    first embedding into ~/.cache/chroma/onnx_models. Good enough for a KB of this size; swapping
+    in a sentence-transformers model would improve recall at the cost of a heavy dependency.
     """
     global _client
     if _client is None:
